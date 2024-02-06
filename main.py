@@ -31,13 +31,13 @@ async def functions(ctx):
 @bot.command(name='export_members')
 async def export_members(ctx):
     members = ctx.guild.members
-    with open('members.csv', 'w', newline='') as csvfile:
+    with open('members.csv', 'w', newline='', encoding='utf-8') as csvfile:
         csvwriter = csv.writer(csvfile)
-        csvwriter.writerow(['User ID', 'Username', 'Discriminator', 'Roles'])
-
+        csvwriter.writerow(['User ID', 'Username', 'Discriminator','Display Name', 'Roles', 'Nickname'])
         for member in members:
-            roles = [role.name for role in member.roles]
-            csvwriter.writerow([member.id, member.name, member.discriminator, ', '.join(roles)])
+            roles = [role.name for role in member.roles if role.name != '@everyone']
+            row = [member.id, member.name, member.discriminator, member.display_name, ','.join(roles), member.nick]
+            csvwriter.writerow(row)
 
     await ctx.send('Exported members to members.csv')
 
